@@ -303,11 +303,7 @@ button{border:none;cursor:pointer;font-family:inherit}
 // ══════════════════════════════════════════════════════════════════════════════
 // Config
 // ══════════════════════════════════════════════════════════════════════════════
-const SERVER_WS = (() => {
-  const loc = window.location;
-  const proto = loc.protocol === 'https:' ? 'wss:' : 'ws:';
-  return proto + '//' + loc.host;
-})();
+const SERVER_WS = 'wss://backgammon-tma-production.up.railway.app';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Telegram WebApp
