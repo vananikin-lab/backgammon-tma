@@ -91,8 +91,8 @@ function tryMatch(key, ws2, playerInfo2) {
     clients.set(ws1, { playerId: waiting.playerId, gameId, player: color1 });
     clients.set(ws2, { playerId: playerInfo2.id,   gameId, player: color2 });
 
-    send(ws1, { type: 'game_start', gameId, yourColor: color1, ...gameSnapshot(state) });
-    send(ws2, { type: 'game_start', gameId, yourColor: color2, ...gameSnapshot(state) });
+    send(ws1, { ...gameSnapshot(state), type: 'game_start', gameId, yourColor: color1 });
+    send(ws2, { ...gameSnapshot(state), type: 'game_start', gameId, yourColor: color2 });
 
     return true;
   }
@@ -145,10 +145,10 @@ wss.on('connection', (ws) => {
         // Notify existing player
         clients.forEach((m, w) => {
           if (m.gameId === gameId && m.player === existingColor) {
-            send(w, { type: 'opponent_joined', ...gameSnapshot(state), yourColor: existingColor });
+            send(w, { ...gameSnapshot(state), type: 'opponent_joined', yourColor: existingColor });
           }
         });
-        send(ws, { type: 'game_start', gameId, yourColor: emptyColor, ...gameSnapshot(state) });
+        send(ws, { ...gameSnapshot(state), type: 'game_start', gameId, yourColor: emptyColor });
         break;
       }
 
