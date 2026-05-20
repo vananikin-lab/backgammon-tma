@@ -2,197 +2,133 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>Нарды</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-/* ── Reset & base ── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#eef1f7;overflow:hidden}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden;background:#1a1a2e}
 button{border:none;cursor:pointer;font-family:inherit}
 
 /* ── Screens ── */
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;transition:opacity .2s;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;transition:opacity .2s}
 .screen.hidden{opacity:0;pointer-events:none}
 
-/* ══════════════════════════════════
-   HOME SCREEN
-══════════════════════════════════ */
-#home{background:linear-gradient(160deg,#dce8ff 0%,#eef1f7 60%)}
-.home-circles{position:absolute;inset:0;overflow:hidden;z-index:0}
-.home-circles span{position:absolute;border-radius:50%;background:rgba(100,150,255,.08)}
-.home-circles span:nth-child(1){width:220px;height:220px;top:-60px;left:-60px}
-.home-circles span:nth-child(2){width:160px;height:160px;top:120px;right:-50px}
-.home-circles span:nth-child(3){width:300px;height:300px;bottom:-120px;left:50%;transform:translateX(-50%)}
-.home-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;height:100%;padding:60px 24px 32px}
-
-.trophy-btn,.gear-btn{position:absolute;top:16px;background:none;border:none;color:#3a82f7;font-size:26px;z-index:2}
-.trophy-btn{right:60px}
-.gear-btn{right:16px}
-
-.daily-card{background:linear-gradient(135deg,#4a7ff5,#3060d0);border-radius:20px;padding:20px 28px;text-align:center;color:#fff;width:200px;box-shadow:0 8px 24px rgba(74,127,245,.35)}
-.daily-card .card-icon{font-size:36px;margin-bottom:8px}
-.daily-card .card-label{font-size:11px;letter-spacing:1px;opacity:.75;text-transform:uppercase;margin-bottom:4px}
-.daily-card .card-date{font-size:18px;font-weight:700;margin-bottom:14px}
-.daily-card .play-btn{background:rgba(255,255,255,.2);color:#fff;border-radius:50px;padding:8px 28px;font-size:15px;font-weight:600;border:none;cursor:pointer}
-
-.home-title{font-size:48px;font-weight:800;color:#1e2d4a;letter-spacing:-1px}
-
-.home-btns{display:flex;gap:12px;width:100%}
-.game-type-btn{flex:1;background:#3a82f7;color:#fff;border-radius:50px;padding:16px 0;font-size:16px;font-weight:700;box-shadow:0 4px 16px rgba(58,130,247,.4);transition:transform .1s,background .15s}
+/* ══ HOME ══ */
+#home{background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);justify-content:center}
+.home-inner{display:flex;flex-direction:column;align-items:center;gap:24px;padding:40px 32px}
+.home-logo{font-size:72px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.home-title{font-size:52px;font-weight:900;color:#fff;letter-spacing:-2px;text-shadow:0 2px 16px rgba(0,0,0,.4)}
+.home-sub{font-size:16px;color:rgba(255,255,255,.5);font-weight:500;margin-top:-12px}
+.home-btns{display:flex;flex-direction:column;gap:14px;width:100%;max-width:280px;margin-top:8px}
+.game-type-btn{border-radius:50px;padding:18px 0;font-size:18px;font-weight:700;letter-spacing:.5px;transition:transform .12s,box-shadow .12s}
 .game-type-btn:active{transform:scale(.96)}
-.game-type-btn.long{background:#1e2d4a}
+.game-type-btn.short{background:linear-gradient(135deg,#3a82f7,#1a5cc8);color:#fff;box-shadow:0 6px 20px rgba(58,130,247,.45)}
+.game-type-btn.long{background:linear-gradient(135deg,#e8534a,#c0392b);color:#fff;box-shadow:0 6px 20px rgba(232,83,74,.45)}
 
-/* ══════════════════════════════════
-   MODAL: game settings
-══════════════════════════════════ */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-end;justify-content:center;transition:opacity .2s}
-.overlay.hidden{opacity:0;pointer-events:none}
-.modal{background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 36px;width:100%;max-width:480px}
-.modal-title{font-size:20px;font-weight:800;color:#1e2d4a;text-align:center;margin-bottom:6px}
+/* ══ MODAL ══ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.overlay.hidden{display:none}
+.modal{background:#1e2a3a;border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;position:relative}
+.modal-title{font-size:20px;font-weight:800;color:#fff;text-align:center;margin-bottom:6px}
 .modal-sub{font-size:14px;color:#8a9ab0;text-align:center;margin-bottom:24px}
-.close-btn{position:absolute;top:18px;right:18px;width:32px;height:32px;border-radius:50%;background:#eef1f7;color:#8a9ab0;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.modal{position:relative}
-
+.close-btn{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);color:#8a9ab0;font-size:18px;display:flex;align-items:center;justify-content:center}
 .score-row{display:flex;justify-content:center;gap:10px;margin-bottom:28px}
-.score-chip{width:52px;height:52px;border-radius:50%;background:#eef1f7;color:#3a82f7;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,color .15s}
-.score-chip.active{background:#3a82f7;color:#fff}
+.score-chip{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.08);color:#3a82f7;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.score-chip.active{background:#3a82f7;color:#fff;border-color:#3a82f7}
+.start-btn{width:100%;background:linear-gradient(135deg,#3a82f7,#1a5cc8);color:#fff;border-radius:50px;padding:17px 0;font-size:17px;font-weight:700;box-shadow:0 4px 16px rgba(58,130,247,.4)}
 
-.start-btn{width:100%;background:#3a82f7;color:#fff;border-radius:50px;padding:17px 0;font-size:17px;font-weight:700;box-shadow:0 4px 16px rgba(58,130,247,.4)}
-.start-btn:active{transform:scale(.97)}
-
-/* ══════════════════════════════════
-   WAITING SCREEN
-══════════════════════════════════ */
-#waiting{background:#eef1f7;justify-content:center;gap:20px}
-.spinner{width:56px;height:56px;border:5px solid #d0dbf0;border-top-color:#3a82f7;border-radius:50%;animation:spin 1s linear infinite}
+/* ══ WAITING ══ */
+#waiting{background:#1a1a2e;justify-content:center;gap:20px}
+.spinner{width:56px;height:56px;border:4px solid rgba(255,255,255,.1);border-top-color:#3a82f7;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#waiting h2{font-size:20px;font-weight:700;color:#1e2d4a}
+#waiting h2{font-size:22px;font-weight:700;color:#fff}
 #waiting p{font-size:14px;color:#8a9ab0}
-.cancel-btn{margin-top:8px;background:#fff;color:#3a82f7;border-radius:50px;padding:12px 32px;font-size:15px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.cancel-btn{margin-top:8px;background:rgba(255,255,255,.08);color:#fff;border-radius:50px;padding:12px 32px;font-size:15px;font-weight:600}
 
-/* ══════════════════════════════════
-   GAME SCREEN
-══════════════════════════════════ */
-#game{background:#eef1f7;flex-direction:column;padding:0}
-
-/* Top bar */
-.game-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);z-index:5}
-.back-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#3a82f7;font-size:22px;background:none}
-.game-topbar-center{display:flex;align-items:center;gap:8px}
-.game-topbar-center img{width:26px;height:26px;border-radius:6px}
-.game-topbar-center span{font-size:17px;font-weight:700;color:#1e2d4a}
-.settings-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#8a9ab0;font-size:20px;background:none}
+/* ══ GAME ══ */
+#game{background:#1a1a2e;padding:0}
+.game-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.08)}
+.back-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#3a82f7;font-size:24px;background:none}
+.game-badge{font-size:16px;font-weight:700;color:#fff}
+.resign-btn{font-size:12px;color:#e85454;background:rgba(232,84,84,.12);border-radius:20px;padding:6px 12px;font-weight:600}
 
 /* Scoreboard */
-.scoreboard{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:#fff;gap:8px}
-.player-info{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
-.player-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:3px solid transparent}
-.player-avatar.active{border-color:#3a82f7}
-.player-name{font-size:11px;color:#8a9ab0;font-weight:500}
-.player-name.self{color:#3a82f7}
-.score-box{display:flex;flex-direction:column;align-items:center;gap:2px}
-.score-num{font-size:22px;font-weight:800;color:#1e2d4a;min-width:32px;text-align:center;border:2px solid #dde5f2;border-radius:8px;padding:2px 8px;background:#fff}
-.score-label{font-size:10px;color:#8a9ab0}
+.scoreboard{display:flex;align-items:center;padding:10px 16px;gap:8px;background:rgba(255,255,255,.03)}
+.pinfo{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.pavatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid transparent;background:#2a3a4a;font-size:18px;display:flex;align-items:center;justify-content:center}
+.pavatar.active-turn{border-color:#3a82f7;box-shadow:0 0 12px rgba(58,130,247,.5)}
+.pname{font-size:11px;color:#8a9ab0;font-weight:500;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pname.me{color:#3a82f7}
+.score-center{display:flex;align-items:center;gap:8px}
+.score-num{font-size:28px;font-weight:900;color:#fff;min-width:36px;text-align:center}
+.score-sep{font-size:13px;color:#8a9ab0;text-align:center;line-height:1.3}
 
-/* Board area */
-.board-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px;overflow:hidden}
-.board-outer{position:relative;width:100%;max-width:420px;aspect-ratio:1.45;background:#c98a3e;border-radius:14px;box-shadow:0 6px 28px rgba(0,0,0,.25);overflow:hidden}
-.board-inner{position:absolute;inset:6px;background:#d4a055;border-radius:10px;display:grid;grid-template-columns:1fr 8px 1fr;grid-template-rows:1fr 1fr;gap:0}
+/* Board */
+.board-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:4px 6px;overflow:hidden}
+#boardCanvas{border-radius:12px;cursor:pointer;touch-action:manipulation;display:block}
 
-/* Points */
-.board-half{position:relative;display:grid;grid-template-columns:repeat(6,1fr)}
-.board-half.top{align-items:start}
-.board-half.bottom{align-items:end}
-.bar-col{background:rgba(0,0,0,.18);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:4px 0}
-
-.point{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer}
-.board-half.top .point{justify-content:flex-start;padding-top:4px}
-.board-half.bottom .point{justify-content:flex-end;padding-bottom:4px}
-
-.triangle{position:absolute;width:100%;bottom:0;top:0;clip-path:polygon(50% 0%,0% 100%,100% 100%)}
-.board-half.top .triangle{clip-path:polygon(50% 100%,0% 0%,100% 0%)}
-
-.tri-dark{background:#8b3a2a}
-.tri-light{background:#e8c97a}
-
-.checker{width:82%;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:2;flex-shrink:0;box-shadow:0 2px 4px rgba(0,0,0,.35);transition:transform .15s}
-.checker.white-c{background:radial-gradient(circle at 35% 35%,#fff,#ccc);color:#333}
-.checker.black-c{background:radial-gradient(circle at 35% 35%,#555,#111)}
-.checker.hint{outline:3px solid #3a82f7;outline-offset:1px}
-.checker.selected{transform:scale(1.15);outline:3px solid #ffcc00;outline-offset:1px}
-.hint-dot{width:38%;aspect-ratio:1;border-radius:50%;background:rgba(58,130,247,.55);z-index:3;cursor:pointer}
-
-/* Bear-off trays */
-.bearoff-area{display:flex;flex-direction:row;gap:4px;align-items:center;justify-content:center;padding:2px 0}
-.bearoff-tray{display:flex;flex-direction:row;flex-wrap:wrap;gap:2px;min-width:60px;min-height:16px;background:rgba(0,0,0,.08);border-radius:6px;padding:2px}
-.bearoff-pip{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.bearoff-pip.white-c{background:#ddd;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-.bearoff-pip.black-c{background:#222;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-
-/* Dice */
-.dice-area{display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 0}
-.die{width:44px;height:44px;background:#fff;border-radius:10px;display:grid;place-items:center;font-size:24px;box-shadow:0 3px 10px rgba(0,0,0,.25);user-select:none;cursor:default;transition:opacity .15s}
-.die.used{opacity:.35}
-.die.clickable{cursor:pointer}
-
-/* Roll button */
-.roll-btn{background:#3a82f7;color:#fff;border-radius:50px;padding:13px 40px;font-size:16px;font-weight:700;box-shadow:0 4px 16px rgba(58,130,247,.4)}
+/* Controls */
+.ctrl{padding:6px 12px;background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.06);min-height:72px;display:flex;align-items:center;justify-content:center}
+.ctrl-opening{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.ctrl-label{font-size:12px;color:#8a9ab0;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.opening-dice-row{display:flex;align-items:center;justify-content:center;gap:16px}
+.opening-player{display:flex;flex-direction:column;align-items:center;gap:4px}
+.opening-player-name{font-size:11px;color:#8a9ab0;font-weight:600}
+.opening-die-wrap{width:48px;height:48px;position:relative}
+canvas.mini-die{border-radius:10px}
+.ctrl-moving{display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px}
+.dice-row{display:flex;gap:8px;align-items:center}
+.action-btns{display:flex;gap:8px}
+.action-btn{width:48px;height:48px;border-radius:12px;font-size:22px;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all .12s}
+.action-btn:active{transform:scale(.93)}
+.action-btn.undo{background:rgba(255,200,50,.12);color:#ffc832;border:2px solid rgba(255,200,50,.25)}
+.action-btn.done{background:rgba(50,200,100,.12);color:#32c864;border:2px solid rgba(50,200,100,.25)}
+.action-btn:disabled{opacity:.3;pointer-events:none}
+.roll-btn{background:linear-gradient(135deg,#3a82f7,#1a5cc8);color:#fff;border-radius:50px;padding:13px 36px;font-size:16px;font-weight:700;box-shadow:0 4px 14px rgba(58,130,247,.4)}
 .roll-btn:active{transform:scale(.96)}
-.roll-btn:disabled{background:#b0c4e8;box-shadow:none;cursor:default}
+.roll-btn:disabled{background:#2a3a4a;box-shadow:none;color:#8a9ab0}
+.opp-turn-label{font-size:14px;color:#8a9ab0;font-weight:600}
+.ctrl-roll{display:flex;align-items:center;justify-content:center;width:100%}
 
-/* Action row */
-.action-row{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 12px}
-
-/* Invite FAB */
-.invite-fab{position:absolute;bottom:80px;right:16px;width:52px;height:52px;background:#3a82f7;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(58,130,247,.5);cursor:pointer;z-index:10}
-.invite-fab svg{width:26px;height:26px;fill:#fff}
+/* Ad */
+.ad-block{height:44px;background:rgba(255,255,255,.03);width:100%;display:flex;align-items:center;justify-content:center;color:#3a4a5a;font-size:11px;border-top:1px solid rgba(255,255,255,.05)}
 
 /* Toast */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e2d4a;color:#fff;border-radius:50px;padding:10px 22px;font-size:14px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,42,58,.95);color:#fff;border-radius:50px;padding:10px 22px;font-size:14px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:999;white-space:nowrap;border:1px solid rgba(255,255,255,.1)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Ad block */
-.ad-block{height:52px;background:#fff;width:100%;display:flex;align-items:center;justify-content:center;color:#c0cad8;font-size:12px;border-top:1px solid #e8ecf5}
-
-/* Round result overlay */
-.result-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity .3s}
-.result-overlay.hidden{opacity:0;pointer-events:none}
-.result-card{background:#fff;border-radius:20px;padding:28px 40px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.result-emoji{font-size:52px;margin-bottom:8px}
-.result-title{font-size:22px;font-weight:800;color:#1e2d4a;margin-bottom:4px}
+/* Result overlay */
+.result-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.result-overlay.hidden{display:none}
+.result-card{background:#1e2a3a;border-radius:24px;padding:32px 48px;text-align:center;border:1px solid rgba(255,255,255,.1)}
+.result-emoji{font-size:56px;margin-bottom:8px}
+.result-title{font-size:24px;font-weight:800;color:#fff;margin-bottom:6px}
 .result-sub{font-size:14px;color:#8a9ab0}
-.result-btn{margin-top:16px;background:#3a82f7;color:#fff;border-radius:50px;padding:13px 36px;font-size:16px;font-weight:700}
+.result-btn{margin-top:20px;background:linear-gradient(135deg,#3a82f7,#1a5cc8);color:#fff;border-radius:50px;padding:14px 40px;font-size:16px;font-weight:700}
 </style>
 </head>
 <body>
 
-<!-- ════════════════════ HOME ════════════════════ -->
+<!-- HOME -->
 <div class="screen" id="home">
-  <div class="home-circles"><span></span><span></span><span></span></div>
-  <button class="trophy-btn">🏆</button>
-  <button class="gear-btn">⚙️</button>
-  <div class="home-content">
-    <div class="daily-card">
-      <div class="card-icon">📅</div>
-      <div class="card-label">Ежедневное испытание</div>
-      <div class="card-date" id="dailyDate"></div>
-      <button class="play-btn">Играть</button>
-    </div>
-    <div class="home-title">Нарды</div>
+  <div class="home-inner">
+    <div class="home-logo">🎲</div>
+    <h1 class="home-title">Нарды</h1>
+    <p class="home-sub">Выберите режим игры</p>
     <div class="home-btns">
-      <button class="game-type-btn" onclick="openModal('short')">Короткие</button>
-      <button class="game-type-btn long" onclick="openModal('long')">Длинные</button>
+      <button class="game-type-btn short" onclick="openModal('short')">Короткие нарды</button>
+      <button class="game-type-btn long" onclick="openModal('long')">Длинные нарды</button>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════ MODAL ════════════════════ -->
+<!-- MODAL -->
 <div class="overlay hidden" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal">
     <button class="close-btn" onclick="closeModal()">✕</button>
     <div class="modal-title">Параметры игры</div>
-    <div class="modal-sub">Выберите количество очков,<br>необходимое для победы</div>
+    <div class="modal-sub">До скольки очков играем?</div>
     <div class="score-row">
       <div class="score-chip active" onclick="selectScore(1)">1</div>
       <div class="score-chip" onclick="selectScore(3)">3</div>
@@ -200,136 +136,78 @@ button{border:none;cursor:pointer;font-family:inherit}
       <div class="score-chip" onclick="selectScore(11)">11</div>
       <div class="score-chip" onclick="selectScore(15)">15</div>
     </div>
-    <button class="start-btn" onclick="startSearch()">Новая игра</button>
+    <button class="start-btn" onclick="startSearch()">Найти соперника</button>
   </div>
 </div>
 
-<!-- ════════════════════ WAITING ════════════════════ -->
+<!-- WAITING -->
 <div class="screen hidden" id="waiting">
   <div class="spinner"></div>
   <h2>Поиск соперника…</h2>
-  <p>Подбираем игрока для вас</p>
+  <p id="waitingMsg">Подбираем игрока для вас</p>
   <button class="cancel-btn" onclick="cancelSearch()">Отмена</button>
 </div>
 
-<!-- ════════════════════ GAME ════════════════════ -->
+<!-- GAME -->
 <div class="screen hidden" id="game">
-  <!-- Topbar -->
   <div class="game-topbar">
     <button class="back-btn" onclick="leaveGame()">‹</button>
-    <div class="game-topbar-center">
-      <span id="gameTypeBadge">Нарды</span>
-    </div>
-    <button class="settings-btn">⚙</button>
+    <span class="game-badge" id="gameTypeBadge">Нарды</span>
+    <button class="resign-btn" onclick="resignGame()">Сдаться</button>
   </div>
-
-  <!-- Scoreboard -->
   <div class="scoreboard">
-    <div class="player-info">
-      <img class="player-avatar" id="myAvatar" src="" alt=""/>
-      <span class="player-name self" id="myName">Вы</span>
+    <div class="pinfo">
+      <div class="pavatar" id="myAvatarEl"></div>
+      <span class="pname me" id="myNameEl">Вы</span>
     </div>
-    <div class="score-box">
-      <div style="display:flex;gap:6px">
-        <div class="score-num" id="myScore">0</div>
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center">
-          <span class="score-label">Для</span>
-          <span class="score-label">победы: <span id="targetScoreLabel">5</span></span>
-        </div>
-        <div class="score-num" id="oppScore">0</div>
-      </div>
+    <div class="score-center">
+      <span class="score-num" id="myScoreEl">0</span>
+      <div class="score-sep">до<br><span id="targetLbl">1</span></div>
+      <span class="score-num" id="oppScoreEl">0</span>
     </div>
-    <div class="player-info">
-      <img class="player-avatar" id="oppAvatar" src="" alt=""/>
-      <span class="player-name" id="oppName">Соперник</span>
+    <div class="pinfo">
+      <div class="pavatar" id="oppAvatarEl"></div>
+      <span class="pname" id="oppNameEl">Соперник</span>
     </div>
   </div>
-
-  <!-- Board -->
   <div class="board-wrap">
-    <div class="board-outer">
-      <div class="board-inner">
-        <!-- Top half: points 13-24 left→right = indices 12..23 reversed as 24..13 -->
-        <div class="board-half top" id="topLeft"></div>
-        <div class="bar-col" id="barTop">
-          <div id="barBlack" style="display:flex;flex-direction:column;align-items:center;gap:2px"></div>
-        </div>
-        <div class="board-half top" id="topRight"></div>
-        <!-- Bottom half: points 12-1 -->
-        <div class="board-half bottom" id="botLeft"></div>
-        <div class="bar-col" id="barBottom">
-          <div id="barWhite" style="display:flex;flex-direction:column;align-items:center;gap:2px"></div>
-        </div>
-        <div class="board-half bottom" id="botRight"></div>
-      </div>
-    </div>
-
-    <!-- Bear-off & dice -->
-    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:420px;padding:4px 8px">
-      <div class="bearoff-area"><div class="bearoff-tray" id="bearoffWhite"></div></div>
-      <div class="dice-area" id="diceArea"></div>
-      <div class="bearoff-area"><div class="bearoff-tray" id="bearoffBlack"></div></div>
-    </div>
-
-    <!-- Action -->
-    <div class="action-row">
-      <button class="roll-btn" id="rollBtn" onclick="sendRoll()" disabled>Бросить кубики</button>
-    </div>
+    <canvas id="boardCanvas"></canvas>
   </div>
-
-  <!-- Invite FAB -->
-  <div class="invite-fab" id="inviteFab" onclick="copyInvite()">
-    <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-  </div>
-
-  <!-- Ad block -->
-  <div class="ad-block"><!-- реклама --></div>
-
-  <!-- Round result -->
+  <div class="ctrl" id="ctrl"></div>
+  <div class="ad-block">Реклама</div>
   <div class="result-overlay hidden" id="resultOverlay">
     <div class="result-card">
       <div class="result-emoji" id="resultEmoji">🎉</div>
-      <div class="result-title" id="resultTitle">Вы выиграли раунд!</div>
-      <div class="result-sub" id="resultSub">Счёт обновлён</div>
-      <button class="result-btn" id="resultBtn" onclick="dismissResult()">Продолжить</button>
+      <div class="result-title" id="resultTitle">Вы победили!</div>
+      <div class="result-sub" id="resultSub"></div>
+      <button class="result-btn" id="resultBtn" onclick="dismissResult()">На главную</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // Config
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 const SERVER_WS = 'wss://backgammon-tma-production.up.railway.app';
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Telegram WebApp
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// Telegram
+// ══════════════════════════════════════════════════════
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
-
 const tgUser = tg?.initDataUnsafe?.user;
 const ME = {
-  id:     tgUser?.id     || ('guest_' + Math.random().toString(36).slice(2,8)),
-  name:   tgUser ? (tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '')) : 'Игрок',
+  id:     tgUser?.id || ('guest_' + Math.random().toString(36).slice(2,8)),
+  name:   tgUser ? (tgUser.first_name + (tgUser.last_name ? ' '+tgUser.last_name : '')) : 'Игрок',
   avatar: tgUser?.photo_url || '',
 };
 
-// Set daily date
-const now = new Date();
-document.getElementById('dailyDate').textContent =
-  now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-
-// Check invite param
-const urlParams = new URLSearchParams(window.location.search);
-const inviteGameId = urlParams.get('game');
-
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // State
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 let ws = null;
 let selectedGameType = 'short';
 let selectedScore = 1;
@@ -337,240 +215,290 @@ let myColor = null;
 let gameState = null;
 let selectedFrom = null;
 let currentGameId = null;
-let inviteId = null; // for created invite game
+let hintTargets = [];
 
-// ══════════════════════════════════════════════════════════════════════════════
+// Board drawing constants (computed on resize)
+let BD = {};
+
+// ══════════════════════════════════════════════════════
 // UI helpers
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.toggle('hidden', s.id !== id);
-  });
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('hidden', s.id !== id));
 }
-
-function showToast(msg, duration = 2000) {
+function showToast(msg, ms=2200) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // Modal
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 function openModal(type) {
   selectedGameType = type;
   document.getElementById('modalOverlay').classList.remove('hidden');
-  selectScore(selectedScore);
+  selectScore(1);
 }
-
 function closeModal(e) {
   if (e && e.target !== document.getElementById('modalOverlay')) return;
   document.getElementById('modalOverlay').classList.add('hidden');
 }
-
 function selectScore(val) {
   selectedScore = val;
-  document.querySelectorAll('.score-chip').forEach(c => {
-    c.classList.toggle('active', parseInt(c.textContent) === val);
-  });
+  document.querySelectorAll('.score-chip').forEach(c => c.classList.toggle('active', parseInt(c.textContent)===val));
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // WebSocket
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 function connectWS(onOpen) {
   if (ws && ws.readyState < 2) { onOpen && onOpen(); return; }
   ws = new WebSocket(SERVER_WS);
   ws.onopen = () => onOpen && onOpen();
-  ws.onmessage = (e) => handleMessage(JSON.parse(e.data));
+  ws.onmessage = e => handleMessage(JSON.parse(e.data));
   ws.onclose = () => {
     showToast('Соединение прервано');
-    if (gameState && gameState.phase !== 'finished') {
-      setTimeout(() => reconnect(), 2000);
-    }
+    if (gameState && gameState.phase !== 'finished') setTimeout(reconnect, 2500);
   };
 }
+function reconnect() { connectWS(() => {}); }
+function wsSend(d) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(d)); }
 
-function reconnect() {
-  connectWS(() => {
-    if (currentGameId) {
-      // Try to rejoin — server will notify if game still active
-    }
-  });
-}
-
-function wsSend(data) {
-  if (ws && ws.readyState === 1) ws.send(JSON.stringify(data));
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // Matchmaking
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 function startSearch() {
   document.getElementById('modalOverlay').classList.add('hidden');
   connectWS(() => {
-    wsSend({ type: 'find_game', gameType: selectedGameType, targetScore: selectedScore, playerInfo: ME });
+    wsSend({ type:'find_game', gameType:selectedGameType, targetScore:selectedScore, playerInfo:ME });
     showScreen('waiting');
   });
 }
-
 function cancelSearch() {
   if (ws) ws.close();
   showScreen('home');
 }
-
-function startInviteGame() {
-  connectWS(() => {
-    wsSend({ type: 'create_invite', gameType: selectedGameType, targetScore: selectedScore, playerInfo: ME });
-    showScreen('waiting');
-  });
+function resignGame() {
+  if (gameState) wsSend({ type:'resign', gameId:gameState.id });
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Message handler
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// Messages
+// ══════════════════════════════════════════════════════
 function handleMessage(msg) {
   switch (msg.type) {
-    case 'waiting':
-      showScreen('waiting');
-      break;
-
-    case 'invite_created':
-      currentGameId = msg.gameId;
-      myColor = msg.yourColor;
-      inviteId = msg.gameId;
-      document.querySelector('#waiting p').textContent = 'Ожидаем друга…';
-      break;
-
+    case 'waiting': showScreen('waiting'); break;
     case 'game_start':
     case 'opponent_joined':
       myColor = msg.yourColor || myColor;
       currentGameId = msg.id;
       applyGameState(msg);
       showScreen('game');
-      setupGameUI();
+      setupScoreboard();
+      resizeBoard();
       break;
-
     case 'game_state':
       applyGameState(msg);
-      renderBoard();
-      updateUI();
+      draw();
+      updateCtrl();
       break;
-
     case 'hints':
-      renderHints(msg.from, msg.hints);
+      hintTargets = msg.hints || [];
+      draw();
       break;
-
     case 'invalid_move':
       showToast('Недопустимый ход');
-      selectedFrom = null;
-      renderBoard();
+      selectedFrom = null; hintTargets = []; draw();
       break;
-
     case 'opponent_left':
       applyGameState(msg);
-      showResult(msg.winner === myColor ? '🏆' : '💔',
-        msg.winner === myColor ? 'Соперник покинул игру. Вы победили!' : 'Вы проиграли',
-        '', true);
+      showResult(msg.winner===myColor?'🏆':'💔', msg.winner===myColor?'Соперник вышел. Победа!':'Соперник вышел.', '', true);
       break;
-
-    case 'error':
-      showToast(msg.message);
+    case 'error': showToast(msg.message); break;
+    case 'invite_created':
+      currentGameId = msg.gameId;
+      myColor = msg.yourColor;
+      document.getElementById('waitingMsg').textContent = 'Ожидаем друга…';
       break;
-
-    case 'pong':
-      break;
+    case 'pong': break;
   }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Game state
-// ══════════════════════════════════════════════════════════════════════════════
 function applyGameState(msg) {
   gameState = {
-    id:            msg.id,
-    gameType:      msg.gameType,
-    targetScore:   msg.targetScore,
-    board:         msg.board,
-    bar:           msg.bar,
-    bearOff:       msg.bearOff,
-    currentPlayer: msg.currentPlayer,
-    dice:          msg.dice,
-    diceRolled:    msg.diceRolled,
-    phase:         msg.phase,
-    scores:        msg.scores,
-    players:       msg.players,
-    winner:        msg.winner,
-    roundWinner:   msg.roundWinner,
+    id: msg.id, gameType: msg.gameType, targetScore: msg.targetScore,
+    board: msg.board, bar: msg.bar, bearOff: msg.bearOff,
+    currentPlayer: msg.currentPlayer, dice: msg.dice,
+    phase: msg.phase, openingRolls: msg.openingRolls || {white:null,black:null},
+    scores: msg.scores, players: msg.players,
+    winner: msg.winner, roundWinner: msg.roundWinner,
+    canUndo: !!msg.canUndo,
   };
-
-  if (msg.type === 'game_start' || msg.type === 'opponent_joined') return;
-
-  renderBoard();
-  updateUI();
-
   if (msg.roundWinner) {
     const iWon = msg.roundWinner === myColor;
     if (msg.phase === 'finished') {
-      showResult(iWon ? '🏆' : '😞',
-        iWon ? 'Вы победили!' : 'Вы проиграли',
-        'Игра завершена', true);
+      showResult(iWon?'🏆':'😞', iWon?'Вы победили!':'Вы проиграли', 'Матч завершён', true);
     } else {
-      showResult(iWon ? '🎉' : '😔',
-        iWon ? 'Вы выиграли раунд!' : 'Соперник выиграл раунд',
-        'Счёт обновлён', false);
+      showResult(iWon?'🎉':'😔', iWon?'Раунд ваш!':'Соперник взял раунд', 'Счёт обновлён', false);
     }
+  }
+  draw();
+  updateCtrl();
+}
+
+function setupScoreboard() {
+  if (!gameState) return;
+  const me = gameState.players[myColor];
+  const opp = gameState.players[myColor==='white'?'black':'white'];
+  document.getElementById('gameTypeBadge').textContent = gameState.gameType==='short'?'Короткие нарды':'Длинные нарды';
+  document.getElementById('targetLbl').textContent = gameState.targetScore;
+  setAvatar('myAvatarEl', me);
+  setAvatar('oppAvatarEl', opp);
+  document.getElementById('myNameEl').textContent = me?.name || 'Вы';
+  document.getElementById('oppNameEl').textContent = opp?.name || 'Соперник';
+}
+function setAvatar(id, info) {
+  const el = document.getElementById(id);
+  if (info?.avatar) {
+    el.innerHTML = `<img src="${info.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover" onerror="this.parentElement.textContent='${(info.name||'?')[0].toUpperCase()}'">`;
+  } else {
+    el.textContent = (info?.name || '?')[0].toUpperCase();
+    el.style.cssText = 'display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3a82f7,#1a5cc8);color:#fff;font-weight:700;font-size:18px';
+  }
+}
+function updateScoreboard() {
+  if (!gameState) return;
+  const isMyTurn = gameState.currentPlayer === myColor;
+  document.getElementById('myAvatarEl').classList.toggle('active-turn', isMyTurn);
+  document.getElementById('oppAvatarEl').classList.toggle('active-turn', !isMyTurn && !!gameState.currentPlayer);
+  document.getElementById('myScoreEl').textContent = gameState.scores[myColor] || 0;
+  document.getElementById('oppScoreEl').textContent = gameState.scores[myColor==='white'?'black':'white'] || 0;
+}
+
+// ══════════════════════════════════════════════════════
+// Controls
+// ══════════════════════════════════════════════════════
+function updateCtrl() {
+  if (!gameState) return;
+  updateScoreboard();
+  const ctrl = document.getElementById('ctrl');
+  const { phase, currentPlayer, dice, canUndo, openingRolls } = gameState;
+  const isMyTurn = currentPlayer === myColor;
+
+  if (phase === 'opening_roll') {
+    const myRoll = openingRolls[myColor];
+    const oppRoll = openingRolls[myColor==='white'?'black':'white'];
+    const bothRolled = myRoll !== null && oppRoll !== null;
+    ctrl.innerHTML = `
+      <div class="ctrl-opening">
+        <div class="ctrl-label">${bothRolled && myRoll===oppRoll ? '⚡ Ничья! Бросайте ещё раз' : 'Кто ходит первым?'}</div>
+        <div class="opening-dice-row">
+          <div class="opening-player">
+            <span class="opening-player-name">Вы</span>
+            <canvas id="myOpenDie" width="48" height="48" style="border-radius:10px"></canvas>
+          </div>
+          <span style="color:#8a9ab0;font-size:18px;font-weight:700">vs</span>
+          <div class="opening-player">
+            <span class="opening-player-name">Соперник</span>
+            <canvas id="oppOpenDie" width="48" height="48" style="border-radius:10px"></canvas>
+          </div>
+        </div>
+        ${myRoll===null ? '<button class="roll-btn" onclick="sendOpeningRoll()" style="padding:11px 28px;font-size:15px">Бросить кубик</button>' : '<span class="opp-turn-label">Ожидаем соперника…</span>'}
+      </div>`;
+    drawMiniDie('myOpenDie', myRoll, myColor==='white'?'white':'black');
+    drawMiniDie('oppOpenDie', oppRoll, myColor==='white'?'black':'white');
+
+  } else if (phase === 'rolling') {
+    ctrl.innerHTML = `<div class="ctrl-roll">${isMyTurn
+      ? '<button class="roll-btn" onclick="sendRoll()">🎲 Бросить кубики</button>'
+      : '<span class="opp-turn-label">Ход соперника…</span>'}</div>`;
+
+  } else if (phase === 'moving') {
+    const diceHTML = dice.map((d,i) => `<canvas id="dieC${i}" width="44" height="44" style="border-radius:9px;cursor:pointer" onclick="onDieClick(${i})"></canvas>`).join('');
+    ctrl.innerHTML = `
+      <div class="ctrl-moving">
+        <div class="action-btns">
+          <button class="action-btn undo" onclick="sendUndo()" ${canUndo&&isMyTurn?'':'disabled'} title="Отменить ход">↩</button>
+          <button class="action-btn done" onclick="sendDone()" ${canUndo&&isMyTurn?'':'disabled'} title="Завершить ход">✓</button>
+        </div>
+        <div class="dice-row">${diceHTML}</div>
+        <div style="width:104px;text-align:right">
+          ${!isMyTurn ? '<span class="opp-turn-label">Ход соперника</span>' : ''}
+        </div>
+      </div>`;
+    dice.forEach((d,i) => drawMiniDie(`dieC${i}`, d, isMyTurn?'white':'dark'));
+
+  } else if (phase === 'finished') {
+    ctrl.innerHTML = `<div class="ctrl-roll"><button class="roll-btn" onclick="leaveGame()">На главную</button></div>`;
   }
 }
 
-function setupGameUI() {
-  const me = gameState.players[myColor];
-  const opp = gameState.players[myColor === 'white' ? 'black' : 'white'];
-
-  // Avatar
-  const myAv = document.getElementById('myAvatar');
-  myAv.src = me?.avatar || '';
-  myAv.onerror = () => { myAv.src = defaultAvatar(me?.name); };
-  const oppAv = document.getElementById('oppAvatar');
-  oppAv.src = opp?.avatar || '';
-  oppAv.onerror = () => { oppAv.src = defaultAvatar(opp?.name); };
-
-  document.getElementById('myName').textContent = me?.name || 'Вы';
-  document.getElementById('oppName').textContent = opp?.name || 'Соперник';
-  document.getElementById('gameTypeBadge').textContent =
-    gameState.gameType === 'short' ? 'Короткие нарды' : 'Длинные нарды';
-  document.getElementById('targetScoreLabel').textContent = gameState.targetScore;
-
-  renderBoard();
-  updateUI();
+// ── Mini die drawing ──
+function drawMiniDie(canvasId, value, style) {
+  const c = document.getElementById(canvasId);
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  ctx.clearRect(0,0,W,H);
+  const r = W*0.16;
+  // Background
+  if (style === 'white') { ctx.fillStyle='#FFFFFF'; }
+  else if (style === 'black') { ctx.fillStyle='#1a1a1a'; }
+  else if (style === 'dark') { ctx.fillStyle='#2a3a4a'; }
+  else { ctx.fillStyle='#FFFFFF'; }
+  roundRectFill(ctx,0,0,W,H,r);
+  if (value === null) {
+    // Unknown
+    ctx.fillStyle = style==='black'?'rgba(255,255,255,.3)':'rgba(0,0,0,.2)';
+    ctx.font=`bold ${Math.round(W*0.45)}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('?', W/2, H/2);
+    return;
+  }
+  // Dots
+  const dotColor = (style==='black'||style==='dark') ? '#FFFFFF' : '#1a1a1a';
+  ctx.fillStyle = dotColor;
+  const dr = W*0.1;
+  const off = W*0.28;
+  const mid = W*0.5;
+  const dots = {
+    1:[[mid,mid]],
+    2:[[off,off],[W-off,H-off]],
+    3:[[off,off],[mid,mid],[W-off,H-off]],
+    4:[[off,off],[W-off,off],[off,H-off],[W-off,H-off]],
+    5:[[off,off],[W-off,off],[mid,mid],[off,H-off],[W-off,H-off]],
+    6:[[off,off],[W-off,off],[off,mid],[W-off,mid],[off,H-off],[W-off,H-off]],
+  };
+  (dots[value]||[]).forEach(([x,y]) => {
+    ctx.beginPath(); ctx.arc(x,y,dr,0,Math.PI*2); ctx.fill();
+  });
 }
 
-function defaultAvatar(name) {
-  const c = encodeURIComponent((name || '?')[0].toUpperCase());
-  return `https://ui-avatars.com/api/?name=${c}&background=4a7ff5&color=fff&size=64`;
+function roundRectFill(ctx,x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath(); ctx.fill();
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Board rendering
-// ══════════════════════════════════════════════════════════════════════════════
-/*
-  Layout (from white's perspective):
-  Top row  → points 24..13 (indices 23..12) left-to-right display
-             but for black player we mirror
+// ══════════════════════════════════════════════════════
+// Actions
+// ══════════════════════════════════════════════════════
+function sendOpeningRoll() { wsSend({ type:'opening_roll', gameId:gameState.id }); }
+function sendRoll() { wsSend({ type:'roll_dice', gameId:gameState.id }); }
+function sendUndo() { wsSend({ type:'undo_move', gameId:gameState.id }); selectedFrom=null; hintTargets=[]; }
+function sendDone() { wsSend({ type:'done_turn', gameId:gameState.id }); selectedFrom=null; hintTargets=[]; }
+function onDieClick(i) { /* dice selection if needed */ }
 
-  Bottom row → points 12..1 (indices 11..0) right-to-left display
-
-  We always show from the current player's perspective = myColor.
-  White: board shows naturally (24 top-left, 1 bottom-right)
-  Black: board is mirrored horizontally (1 top-left, 24 bottom-right)
-*/
-
+// ══════════════════════════════════════════════════════
+// Board — display indices
+// ══════════════════════════════════════════════════════
 function getDisplayIndices() {
-  // Returns arrays of board indices for [topLeft(6), topRight(6), botLeft(6), botRight(6)]
   if (myColor === 'white') {
-    // Top: 24,23,22,21,20,19 | 18,17,16,15,14,13
-    // Bot: 12,11,10,9,8,7   | 6,5,4,3,2,1
     return {
       topLeft:  [23,22,21,20,19,18],
       topRight: [17,16,15,14,13,12],
@@ -578,7 +506,6 @@ function getDisplayIndices() {
       botRight: [5,4,3,2,1,0],
     };
   } else {
-    // Black sees the board mirrored
     return {
       topLeft:  [0,1,2,3,4,5],
       topRight: [6,7,8,9,10,11],
@@ -588,266 +515,366 @@ function getDisplayIndices() {
   }
 }
 
-function renderBoard() {
-  if (!gameState) return;
-  const { board, bar, bearOff } = gameState;
-  const idx = getDisplayIndices();
-
-  renderHalf('topLeft', idx.topLeft, 'top', true);
-  renderHalf('topRight', idx.topRight, 'top', false);
-  renderHalf('botLeft', idx.botLeft, 'bottom', true);
-  renderHalf('botRight', idx.botRight, 'bottom', false);
-
-  renderBar(bar);
-  renderBearOff(bearOff);
+// ══════════════════════════════════════════════════════
+// Board — canvas draw
+// ══════════════════════════════════════════════════════
+function resizeBoard() {
+  const wrap = document.querySelector('.board-wrap');
+  const canvas = document.getElementById('boardCanvas');
+  if (!wrap || !canvas) return;
+  const wW = wrap.clientWidth - 12;
+  const wH = wrap.clientHeight - 8;
+  // Maintain aspect ratio ~1.6:1
+  let W = wW, H = Math.round(W / 1.6);
+  if (H > wH) { H = wH; W = Math.round(H * 1.6); }
+  canvas.width = W; canvas.height = H;
+  const B = Math.max(8, Math.round(W * 0.02));
+  const BAR = Math.round(W * 0.065);
+  const PW = (W - 2*B - BAR) / 12;
+  const PH = (H - 2*B) * 0.84;
+  const CR = Math.min(PW * 0.43, PH / 5 * 0.48);
+  BD = { W, H, B, BAR, PW, PH, CR, barX: (W-BAR)/2 };
+  draw();
 }
 
-function renderHalf(containerId, indices, rowType, isDark) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = '';
-  indices.forEach((boardIdx, col) => {
+function draw() {
+  const canvas = document.getElementById('boardCanvas');
+  if (!canvas || !gameState) return;
+  const ctx = canvas.getContext('2d');
+  const { W, H, B, BAR, PW, PH, CR, barX } = BD;
+  if (!W) return;
+
+  ctx.clearRect(0,0,W,H);
+
+  // ── Outer frame (wood)
+  ctx.fillStyle = '#6B3010';
+  roundRectFill(ctx,0,0,W,H,14);
+
+  // ── Inner surface
+  ctx.fillStyle = '#C8872A';
+  roundRectFill(ctx,B,B,W-2*B,H-2*B,10);
+
+  // ── Bar
+  ctx.fillStyle = '#5A2800';
+  ctx.fillRect(barX, B, BAR, H-2*B);
+  // Bar border lines
+  ctx.strokeStyle = '#3a1800';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(barX, B); ctx.lineTo(barX, H-B); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(barX+BAR, B); ctx.lineTo(barX+BAR, H-B); ctx.stroke();
+
+  const di = getDisplayIndices();
+
+  // ── Triangles
+  function drawTriangle(col, isTop, xOff, isLeft) {
+    const x = xOff + col * PW;
+    // Alternate colors: dark/light pattern
+    const isDark = isLeft ? (col % 2 === (isTop ? 0 : 1)) : (col % 2 === (isTop ? 1 : 0));
+    ctx.fillStyle = isDark ? '#8B1A1A' : '#E8D0A0';
+    ctx.beginPath();
+    if (isTop) {
+      ctx.moveTo(x, B); ctx.lineTo(x+PW, B); ctx.lineTo(x+PW/2, B+PH);
+    } else {
+      ctx.moveTo(x, H-B); ctx.lineTo(x+PW, H-B); ctx.lineTo(x+PW/2, H-B-PH);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+
+  for (let c=0;c<6;c++) {
+    drawTriangle(c, true,  B,        true);
+    drawTriangle(c, true,  barX+BAR, false);
+    drawTriangle(c, false, B,        true);
+    drawTriangle(c, false, barX+BAR, false);
+  }
+
+  // ── Checkers
+  function drawCheckersAt(boardIdx, col, isTop, xOff) {
     const val = gameState.board[boardIdx];
+    if (val === 0) return;
     const count = Math.abs(val);
-    const color = val > 0 ? 'white' : val < 0 ? 'black' : null;
-    const isLight = (col % 2 === 0) === isDark;
+    const color = val > 0 ? 'white' : 'black';
+    const cx = xOff + col*PW + PW/2;
+    const maxShow = Math.min(count, 5);
+    const spacing = Math.min(CR*2 - 1, (PH*0.9) / maxShow);
+    const isSelected = boardIdx === selectedFrom;
 
-    const pt = document.createElement('div');
-    pt.className = 'point';
-    pt.dataset.idx = boardIdx;
-
-    // Triangle
-    const tri = document.createElement('div');
-    tri.className = `triangle ${isLight ? 'tri-light' : 'tri-dark'}`;
-    pt.appendChild(tri);
-
-    // Checkers
-    const displayCount = Math.min(count, 5);
-    for (let i = 0; i < displayCount; i++) {
-      const ch = document.createElement('div');
-      ch.className = `checker ${color}-c`;
-      if (count > 5 && i === 4) ch.textContent = count;
-      if (boardIdx === selectedFrom) ch.classList.add('selected');
-      ch.onclick = () => onPointClick(boardIdx);
-      pt.appendChild(ch);
+    for (let i=0;i<maxShow;i++) {
+      const cy = isTop ? (B + CR + i*spacing) : (H-B-CR - i*spacing);
+      drawChecker(ctx, cx, cy, CR, color, isSelected && i === 0);
+    }
+    if (count > 5) {
+      const lastCy = isTop ? (B + CR + 4*spacing) : (H-B-CR - 4*spacing);
+      ctx.fillStyle = color === 'white' ? '#333' : '#fff';
+      ctx.font = `bold ${Math.round(CR*0.85)}px sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(count, cx, lastCy);
     }
 
-    // Hint dot
-    if (isHintTarget(boardIdx)) {
-      const dot = document.createElement('div');
-      dot.className = 'hint-dot';
-      dot.onclick = () => onHintClick(boardIdx);
-      pt.appendChild(dot);
+    // Hint dot on this point
+    if (hintTargets.some(h => h.to === boardIdx)) {
+      const dotY = isTop ? B+PH*0.72 : H-B-PH*0.72;
+      ctx.fillStyle = 'rgba(58,130,247,0.65)';
+      ctx.beginPath(); ctx.arc(cx, dotY, CR*0.52, 0, Math.PI*2); ctx.fill();
     }
+  }
 
-    el.appendChild(pt);
+  for (let c=0;c<6;c++) {
+    drawCheckersAt(di.topLeft[c],  c, true,  B);
+    drawCheckersAt(di.topRight[c], c, true,  barX+BAR);
+    drawCheckersAt(di.botLeft[c],  c, false, B);
+    drawCheckersAt(di.botRight[c], c, false, barX+BAR);
+  }
+
+  // Hint dots on empty points
+  hintTargets.forEach(h => {
+    if (h.to === 'bearoff') return;
+    const idx = h.to;
+    const val = gameState.board[idx];
+    if (val !== 0) return; // already drawn with checkers
+    // Find position
+    let cx = null, cy = null;
+    const check = (arr, isTop, xOff) => {
+      for (let c=0;c<6;c++) {
+        if (arr[c] === idx) {
+          cx = xOff + c*PW + PW/2;
+          cy = isTop ? B+PH*0.72 : H-B-PH*0.72;
+        }
+      }
+    };
+    check(di.topLeft,  true,  B);
+    check(di.topRight, true,  barX+BAR);
+    check(di.botLeft,  false, B);
+    check(di.botRight, false, barX+BAR);
+    if (cx !== null) {
+      ctx.fillStyle = 'rgba(58,130,247,0.65)';
+      ctx.beginPath(); ctx.arc(cx, cy, CR*0.52, 0, Math.PI*2); ctx.fill();
+    }
   });
-}
 
-let hintTargets = []; // [{to, dieIndex, die}]
-
-function isHintTarget(idx) {
-  return hintTargets.some(h => h.to === idx);
-}
-
-function renderHints(from, hints) {
-  hintTargets = hints || [];
-  renderBoard();
-}
-
-function renderBar(bar) {
-  const bw = document.getElementById('barWhite');
-  const bb = document.getElementById('barBlack');
-  bw.innerHTML = '';
-  bb.innerHTML = '';
-  for (let i = 0; i < bar.white; i++) {
-    const c = document.createElement('div');
-    c.className = 'checker white-c';
-    c.style.width = '28px'; c.style.height = '28px';
-    c.onclick = () => onBarClick('white');
-    bw.appendChild(c);
+  // Bear-off hint indicator
+  if (hintTargets.some(h => h.to === 'bearoff')) {
+    const isWhite = myColor === 'white';
+    // White bears off on the right (beyond botRight), Black on the left (beyond botLeft)
+    const bx = isWhite ? W-B/2 : B/2;
+    const by = H/2;
+    ctx.fillStyle = 'rgba(58,130,247,0.7)';
+    ctx.strokeStyle = '#3a82f7';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(bx, by, CR*0.7, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.font=`bold ${Math.round(CR*0.6)}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('↑', bx, by);
   }
-  for (let i = 0; i < bar.black; i++) {
-    const c = document.createElement('div');
-    c.className = 'checker black-c';
-    c.style.width = '28px'; c.style.height = '28px';
-    c.onclick = () => onBarClick('black');
-    bb.appendChild(c);
-  }
+
+  // ── Bar checkers
+  drawBarCheckers(ctx);
 }
 
-function renderBearOff(bearOff) {
-  const bw = document.getElementById('bearoffWhite');
-  const bb = document.getElementById('bearoffBlack');
-  bw.innerHTML = '';
-  bb.innerHTML = '';
-  for (let i = 0; i < bearOff.white; i++) {
-    const p = document.createElement('div');
-    p.className = 'bearoff-pip white-c'; bw.appendChild(p);
+function drawChecker(ctx, cx, cy, r, color, selected) {
+  ctx.save();
+  if (selected) {
+    ctx.shadowColor='rgba(255,200,0,.9)';
+    ctx.shadowBlur=12;
+  } else {
+    ctx.shadowColor='rgba(0,0,0,.5)';
+    ctx.shadowBlur=5; ctx.shadowOffsetY=2;
   }
-  for (let i = 0; i < bearOff.black; i++) {
-    const p = document.createElement('div');
-    p.className = 'bearoff-pip black-c'; bb.appendChild(p);
+  const g = ctx.createRadialGradient(cx-r*.28, cy-r*.28, r*.05, cx, cy, r);
+  if (color==='white') {
+    g.addColorStop(0,'#FFFFFF'); g.addColorStop(.6,'#E0E0E0'); g.addColorStop(1,'#B0B0B0');
+  } else {
+    g.addColorStop(0,'#666'); g.addColorStop(.5,'#222'); g.addColorStop(1,'#080808');
   }
+  ctx.fillStyle=g;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+  // Outer ring
+  ctx.strokeStyle = color==='white'?'rgba(0,0,0,.25)':'rgba(255,255,255,.12)';
+  ctx.lineWidth=1.5; ctx.stroke();
+  // Inner ring highlight
+  ctx.strokeStyle = color==='white'?'rgba(255,255,255,.9)':'rgba(255,255,255,.08)';
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(cx,cy,r*.68,0,Math.PI*2); ctx.stroke();
+  if (selected) {
+    ctx.strokeStyle='rgba(255,200,0,.9)'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.arc(cx,cy,r+2,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Dice UI
-// ══════════════════════════════════════════════════════════════════════════════
-const dieFaces = ['', '⚀','⚁','⚂','⚃','⚄','⚅'];
-
-function updateUI() {
+function drawBarCheckers(ctx) {
   if (!gameState) return;
-  const { dice, phase, scores, players, currentPlayer } = gameState;
-  const isMyTurn = currentPlayer === myColor;
-
-  // Scores
-  const myS = scores[myColor] || 0;
-  const oppColor = myColor === 'white' ? 'black' : 'white';
-  const oppS = scores[oppColor] || 0;
-  document.getElementById('myScore').textContent = myS;
-  document.getElementById('oppScore').textContent = oppS;
-
-  // Avatar active border
-  document.getElementById('myAvatar').classList.toggle('active', isMyTurn);
-  document.getElementById('oppAvatar').classList.toggle('active', !isMyTurn);
-
-  // Dice
-  const diceArea = document.getElementById('diceArea');
-  diceArea.innerHTML = '';
-  dice.forEach((d, i) => {
-    const die = document.createElement('div');
-    die.className = 'die' + (isMyTurn && phase === 'moving' ? ' clickable' : '');
-    die.textContent = dieFaces[d] || d;
-    diceArea.appendChild(die);
-  });
-
-  // Roll button
-  const rollBtn = document.getElementById('rollBtn');
-  rollBtn.disabled = !(isMyTurn && phase === 'rolling');
-  rollBtn.textContent = isMyTurn && phase === 'rolling' ? 'Бросить кубики' : (isMyTurn ? 'Ваш ход' : 'Ход соперника');
+  const { W, H, B, BAR, CR, barX } = BD;
+  const { bar } = gameState;
+  const bcx = barX + BAR/2;
+  const r = Math.min(CR, BAR*0.4);
+  // White on bar (bottom half)
+  for (let i=0;i<Math.min(bar.white,4);i++) {
+    const cy = H/2 + r + i*(r*2+2);
+    drawChecker(ctx, bcx, cy, r, 'white', false);
+  }
+  if (bar.white > 4) {
+    ctx.fillStyle='#fff'; ctx.font=`bold ${Math.round(r)}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(bar.white, bcx, H/2+r+3*(r*2+2));
+  }
+  // Black on bar (top half)
+  for (let i=0;i<Math.min(bar.black,4);i++) {
+    const cy = H/2 - r - i*(r*2+2);
+    drawChecker(ctx, bcx, cy, r, 'black', false);
+  }
+  if (bar.black > 4) {
+    ctx.fillStyle='#fff'; ctx.font=`bold ${Math.round(r)}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(bar.black, bcx, H/2-r-3*(r*2+2));
+  }
+  // Bar click hints
+  const isWhite = myColor==='white';
+  if (hintTargets.some(h => h.to !== 'bearoff') && selectedFrom==='bar') {
+    // handled in getClickedBoardIndex
+  }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Click handlers
-// ══════════════════════════════════════════════════════════════════════════════
-function onPointClick(boardIdx) {
+// ══════════════════════════════════════════════════════
+// Click handling
+// ══════════════════════════════════════════════════════
+function getClickedBoardIndex(x, y) {
+  const { W, H, B, BAR, PW, barX } = BD;
+  // Bar
+  if (x >= barX && x <= barX+BAR) return 'bar';
+  // Bear-off zones (edges)
+  if (x < B/2 || x > W-B/2) return 'bearoff';
+  const di = getDisplayIndices();
+  const isTop = y < H/2;
+  const isLeft = x < barX;
+  const xOff = isLeft ? B : barX+BAR;
+  let col = Math.floor((x - xOff) / PW);
+  col = Math.max(0, Math.min(5, col));
+  if (isTop && isLeft)  return di.topLeft[col];
+  if (isTop && !isLeft) return di.topRight[col];
+  if (!isTop && isLeft) return di.botLeft[col];
+  return di.botRight[col];
+}
+
+document.getElementById('boardCanvas').addEventListener('click', e => {
   if (!gameState || gameState.phase !== 'moving') return;
   if (gameState.currentPlayer !== myColor) return;
+  const canvas = document.getElementById('boardCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top)  * scaleY;
+  const idx = getClickedBoardIndex(x, y);
+  if (idx === null) return;
+  handlePointClick(idx);
+});
 
-  const val = gameState.board[boardIdx];
-  const isOwn = myColor === 'white' ? val > 0 : val < 0;
+document.getElementById('boardCanvas').addEventListener('touchend', e => {
+  e.preventDefault();
+  if (!gameState || gameState.phase !== 'moving') return;
+  if (gameState.currentPlayer !== myColor) return;
+  const canvas = document.getElementById('boardCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const touch = e.changedTouches[0];
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (touch.clientX - rect.left) * scaleX;
+  const y = (touch.clientY - rect.top)  * scaleY;
+  const idx = getClickedBoardIndex(x, y);
+  if (idx === null) return;
+  handlePointClick(idx);
+}, { passive: false });
 
-  // If clicking a hint target — move
-  const hint = hintTargets.find(h => h.to === boardIdx);
-  if (hint && selectedFrom !== null) {
-    sendMove(selectedFrom, boardIdx, hint.dieIndex);
+function handlePointClick(idx) {
+  const { board, bar } = gameState;
+  const isWhite = myColor === 'white';
+
+  // Bear off
+  if (idx === 'bearoff') {
+    if (selectedFrom !== null && hintTargets.some(h => h.to === 'bearoff')) {
+      const hint = hintTargets.find(h => h.to === 'bearoff');
+      wsSend({ type:'move', gameId:gameState.id, from:selectedFrom, to:'bearoff', dieIndex:hint.dieIndex });
+      selectedFrom=null; hintTargets=[];
+    }
     return;
   }
 
-  // If own checker — select and request hints
-  if (isOwn) {
-    selectedFrom = boardIdx;
-    hintTargets = [];
-    renderBoard();
-    wsSend({ type: 'get_hints', gameId: gameState.id, from: boardIdx });
+  // Bar click
+  if (idx === 'bar') {
+    const myBar = isWhite ? bar.white : bar.black;
+    if (myBar > 0) {
+      selectedFrom = 'bar'; hintTargets = [];
+      wsSend({ type:'get_hints', gameId:gameState.id, from:'bar' });
+      draw();
+    }
+    return;
   }
-}
 
-function onBarClick(color) {
-  if (!gameState || gameState.phase !== 'moving') return;
-  if (gameState.currentPlayer !== myColor || myColor !== color) return;
-  selectedFrom = 'bar';
-  hintTargets = [];
-  wsSend({ type: 'get_hints', gameId: gameState.id, from: 'bar' });
-}
-
-function onHintClick(toIdx) {
-  const hint = hintTargets.find(h => h.to === toIdx);
+  // Hint target click
+  const hint = hintTargets.find(h => h.to === idx);
   if (hint && selectedFrom !== null) {
-    sendMove(selectedFrom, toIdx, hint.dieIndex);
+    wsSend({ type:'move', gameId:gameState.id, from:selectedFrom, to:idx, dieIndex:hint.dieIndex });
+    selectedFrom=null; hintTargets=[];
+    return;
   }
-}
 
-function sendMove(from, to, dieIndex) {
-  wsSend({ type: 'move', gameId: gameState.id, from, to, dieIndex });
-  selectedFrom = null;
-  hintTargets = [];
-}
-
-function sendRoll() {
-  if (!gameState) return;
-  wsSend({ type: 'roll_dice', gameId: gameState.id });
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// Invite
-// ══════════════════════════════════════════════════════════════════════════════
-function copyInvite() {
-  const gid = currentGameId || inviteId;
-  if (!gid) { showToast('Сначала начните игру'); return; }
-  const botName = 'BackgammonTestBot'; // ← замените на имя вашего бота
-  const link = `https://t.me/${botName}?startapp=game_${gid}`;
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(link).then(() => showToast('✅ Ссылка скопирована!'));
+  // Own checker click
+  const val = gameState.board[idx];
+  const isOwn = isWhite ? val > 0 : val < 0;
+  if (isOwn) {
+    selectedFrom = idx; hintTargets = [];
+    draw();
+    wsSend({ type:'get_hints', gameId:gameState.id, from:idx });
   } else {
-    const ta = document.createElement('textarea');
-    ta.value = link;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('✅ Ссылка скопирована!');
+    selectedFrom=null; hintTargets=[]; draw();
   }
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // Results
-// ══════════════════════════════════════════════════════════════════════════════
-let resultIsFinal = false;
-
+// ══════════════════════════════════════════════════════
+let _resultFinal = false;
 function showResult(emoji, title, sub, isFinal) {
-  resultIsFinal = isFinal;
+  _resultFinal = isFinal;
   document.getElementById('resultEmoji').textContent = emoji;
   document.getElementById('resultTitle').textContent = title;
   document.getElementById('resultSub').textContent = sub;
   document.getElementById('resultBtn').textContent = isFinal ? 'На главную' : 'Продолжить';
   document.getElementById('resultOverlay').classList.remove('hidden');
 }
-
 function dismissResult() {
   document.getElementById('resultOverlay').classList.add('hidden');
-  if (resultIsFinal) leaveGame();
+  if (_resultFinal) leaveGame();
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Leave / back
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// Leave
+// ══════════════════════════════════════════════════════
 function leaveGame() {
-  if (gameState && gameState.phase !== 'finished') {
-    wsSend({ type: 'resign', gameId: gameState.id });
-  }
-  gameState = null;
-  currentGameId = null;
-  myColor = null;
-  selectedFrom = null;
-  hintTargets = [];
+  gameState=null; currentGameId=null; myColor=null; selectedFrom=null; hintTargets=[];
+  document.getElementById('resultOverlay').classList.add('hidden');
   showScreen('home');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// Init — check if launched via invite link
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// Resize
+// ══════════════════════════════════════════════════════
+window.addEventListener('resize', () => { if (gameState) resizeBoard(); });
+
+// Invite param
+const urlParams = new URLSearchParams(window.location.search);
+const inviteGameId = urlParams.get('game');
 if (inviteGameId) {
   connectWS(() => {
-    wsSend({ type: 'join_invite', gameId: inviteGameId, playerInfo: ME });
+    wsSend({ type:'join_invite', gameId:inviteGameId, playerInfo:ME });
     showScreen('waiting');
-    document.querySelector('#waiting p').textContent = 'Подключаемся к игре…';
+    document.getElementById('waitingMsg').textContent = 'Подключаемся к игре…';
   });
 }
 
-// Keepalive ping
-setInterval(() => { if (ws && ws.readyState === 1) wsSend({ type: 'ping' }); }, 25000);
+// Keepalive
+setInterval(() => { if (ws && ws.readyState===1) wsSend({ type:'ping' }); }, 25000);
 </script>
 </body>
 </html>
